@@ -78,7 +78,7 @@ export default function Login({ setLogin, setUser, login }) {
               />
               <input
                 className="block border-2 rounded mx-auto mb-6 w-full p-2"
-                type="text"
+                type="password"
                 id="password"
                 name="password"
                 placeholder="Password"
