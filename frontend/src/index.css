@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.App{
+    height: 100vh;
+    width: 100vw;
+}
+
+.greyBack{
+    background: rgba(239, 239, 239, 1)  no-repeat padding-box;
+    opacity: 1;
+}
