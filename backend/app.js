@@ -4,11 +4,12 @@ const cors = require("cors");
 const connectdb = require("./db/connect");
 const updateToken = require("./db/update");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const { ObjectId } = require("mongodb");
-const port = 8000;
+const port = process.env.PORT || 8000;
 
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(cors({ credentials: true, origin: process.env.BASE_URL }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -50,7 +51,7 @@ app.get("/authcheck", async (req, res, next) => {
   try {
     const verified = jwt.verify(token, "thisisarandomsecretkey");
     const collection = await connectdb();
-    console.log(verified.username);
+    // console.log(verified.username);
     const user = await collection.findOne({ username: verified.username});
     if (!user) {
       res.json({ status: false });
