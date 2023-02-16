@@ -5,6 +5,7 @@ const connectdb = require("./db/connect");
 const updateToken = require("./db/update");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const { ObjectId } = require("mongodb");
 const port = 8000;
 
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
@@ -24,10 +25,10 @@ app.post("/signin", async (req, res) => {
     password: user.password,
   });
   if (dbdata) {
-    const token = jwt.sign({ _id: dbdata._id }, "thisisarandomsecretkey", {
+    const token = jwt.sign({ username: dbdata.username }, "thisisarandomsecretkey", {
       expiresIn: "2 minutes",
     });
-    console.log(token);
+    // console.log(token);
     updateToken(token, dbdata._id);
 
     res.cookie("jwt", token, {
@@ -41,23 +42,22 @@ app.post("/signin", async (req, res) => {
   }
 });
 
-app.get("/authcheck", async (req, res) => {
-  // setInterval(() => {
-    
-  // }, 10000);
+app.get("/authcheck", async (req, res, next) => {
+  const token = await req.cookies.jwt;
+  if (!token) {
+    return res.json({ status: false });
+  }
   try {
-    const token = req.cookies.jwt;
-    if (!token) {
-      return res.json({ status: false });
-    }
     const verified = jwt.verify(token, "thisisarandomsecretkey");
     const collection = await connectdb();
-    const user = await collection.findOne({ _id: verified, token: token });
+    console.log(verified.username);
+    const user = await collection.findOne({ username: verified.username});
     if (!user) {
-      return res.json({ status: false });
+      res.json({ status: false });
+    } else {
+      res.json({ status: true, user: user.username });
     }
-    res.json({ status: true, user: user.username });
-    
+    next();
   } catch (err) {
     res.json({ status: false });
   }

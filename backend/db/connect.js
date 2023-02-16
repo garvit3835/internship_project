@@ -10,7 +10,7 @@ const connectdb = async () => {
   result = await client.connect();
   let db = await result.db("internship");
   let collection = await db.collection("users");
-  console.log("db connected");
+  // console.log("db connected");
 //   data = await collection.findOne({});
 //   console.log(data);
   return collection
